@@ -1,0 +1,115 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+char msg[50],gen[50],a[100],rem[50],recv[100];
+int i,j,gen_degree,msg_len,flag=0;
+
+void getdata()
+{
+ 	printf("\n------------Sending Message-------------------\n");
+
+	printf("\nAT SENDER SIDE"); 
+
+ 	printf("\nEnter the message polynomial bits: ");
+	scanf("%s",msg);
+ 
+	msg_len=strlen(msg);
+ 
+	printf("\nEnter the generator polynomial bits: ");
+	scanf("%s",gen);
+	gen_degree=strlen(gen)-1;
+ 
+	for(i=0;i<msg_len;i++)
+  		a[i]=msg[i];
+
+ 	for(i=0;i<gen_degree;i++)
+  		a[i+msg_len]='0';
+ 
+	a[gen_degree+msg_len]='\0';
+
+ 	printf("\nThe msg polynomial when appended with zeroes is: ");
+ 	printf("%s",a);
+}
+
+void calculation()
+{
+	for(i=0;i<msg_len;i++)
+	{	
+  		if(a[i]=='1')
+   		{
+     			for(j=0;j<=gen_degree;j++)
+     			{
+       				if(a[i+j]==gen[j])
+      					
+					a[i+j]='0';
+   				else
+	     				a[i+j]='1';
+    			}	
+   		}
+	}
+ 	a[i+gen_degree+1]='\0';
+ 	for(i=0;i<=gen_degree;i++)
+   		rem[i]=a[i+msg_len];
+   
+	rem[gen_degree]='\0';
+
+	printf("\nThe checksum calculated is:");
+	printf("%s",rem);
+
+	for(i=0;i<msg_len;i++)
+  		a[i]=msg[i];
+
+ 	printf("\nThe polynomial code word with checksum is:");
+ 	printf("%s",a);
+}
+
+void valid()
+{ 
+	
+	printf("\n\nAT RECEIVER SIDE\n"); 
+
+ 	printf("\nChecking the validity of received message\n"); 
+
+ 	printf("\nEnter the received polynomial code: ");
+ 	scanf("%s",recv);
+
+ 	for(i=0;i<msg_len;i++)
+	{
+  		if(recv[i]=='1')
+   		{
+          		for(j=0;j<=gen_degree;j++)
+	    		{    
+          			if(recv[i+j]==gen[j])
+   	     		
+					recv[i+j]='0';
+   				else
+					recv[i+j]='1';
+    			}
+   		}
+	}
+ 	recv[i+gen_degree+1]='\0';
+ 	
+	for(i=0;i<=gen_degree;i++)
+	{
+ 		rem[i]=recv[i+msg_len];
+ 		
+	if(rem[i]=='1')
+ 		flag=1;
+	}	
+ 	rem[i]='\0';
+ 
+	printf("\nReminder is:");
+	printf("%s",rem);
+	
+ 
+	if(flag)
+		printf("\n Transmission is erroneous\n");
+	else
+		printf("\nTransmission is error free\n");
+}
+main()
+{
+  	getdata();
+  	calculation();
+  	valid();
+}
