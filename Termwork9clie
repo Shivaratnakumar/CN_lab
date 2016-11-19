@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<fcntl.h>
+#include<string.h>
+#define SERV_TCP_PORT 6880
+#define SERV_HOST_ADDR "127.0.0.1"
+
+int main()
+{
+	int sockfd, n;
+
+	struct sockaddr_in serv_addr, cli_addr;
+
+	char filename[100], buf[2000];
+
+	serv_addr.sin_family= AF_INET;
+
+	serv_addr.sin_addr.s_addr= inet_addr(SERV_HOST_ADDR);
+
+	serv_addr.sin_port= htons(SERV_TCP_PORT);
+
+	if((sockfd=socket(AF_INET, SOCK_STREAM,0))<0)
+	
+		printf("CLIENT : CANNT OPEN STREAM SOCKET");
+	
+	else
+	
+		printf("CLIENT : CAN OPEN STREAM SOCKET SUCCESSFULLY");
+	
+	if(connect(sockfd,(struct sockaddr*) & serv_addr, sizeof(serv_addr))<0)
+	{
+		printf("CLIENT : CANNT CONNECT TO SERVER");
+		return(0);
+	}
+	else 
+	{
+		printf("CLIENT: CONNECTED TO SERVER SUCCESSFULLY");
+
+		printf("ENTER THE FILENAME TO BE DISPLAYED:  ");
+		scanf("%s",filename);
+
+          	write(sockfd,filename,strlen(filename));
+
+          	printf("\n Client:filename transferred to server\n");
+           	n=read(sockfd,buf,2000);
+        
+		if(n<0)
+        		printf("\nClient: Error  reading from socket \n");
+       
+      	if(n==0)
+        		printf("Client: Reply from server....... File does not exist \n");
+    		else
+  		{
+     			printf("\n Client: displaying file content of %s \n", filename);
+      		fputs(buf,stdout);
+   		}
+    		close(sockfd);
+    		return 0;
+ 	}
+} 
