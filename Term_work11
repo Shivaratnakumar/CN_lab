@@ -1,0 +1,72 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<math.h>
+
+int mul(unsigned int x,unsigned int y,unsigned int n)
+{
+  	int k=1,j;
+  	for(j=1;j<=y;j++)
+  	k=(k*x)%n;
+  	return(unsigned int)k;
+}
+
+int gcd(int m,int n)
+{
+  	while(n!=0)
+  	{
+    		int r=m%n;
+    		m=n;
+    		n=r;
+   	}
+ 	return m;
+}
+
+int main()
+{
+  	char msg[100];
+  	unsigned int pt[100],ct[100],n,d,e,p,q,l;
+   	int i,len,phi=0;
+
+  	printf("Enter th message");
+  	scanf("%s",msg);
+ 
+  	len=strlen(msg);
+ 
+ 	for(i=0;i<len;i++)
+ 	pt[i]=msg[i];
+
+  	printf("\n Enter the value of p and q to very large prime no \n");
+  	scanf("%d %d",&p,&q);
+     	n=p*q;
+ 
+  	phi=(p-1)*(q-1);
+
+  	for(i=2;i<phi;i++)
+   	if(gcd(i,phi)==1) break;
+    	e=i;
+
+  	for(i=2;i<phi;i++)
+   	if((e*i-1)%phi==0) break;
+   	d=i;
+
+	printf("\n public key:(%d  %d)\n",e,n);
+	printf("\n private key:(%d %d)\n",d,n);
+  	
+	for(i=0;i<len;i++)
+  		ct[i]=mul(pt[i],e,n);
+
+	printf("\n Plaintext\t\tciphertext\n\n");
+  	for(i=0;i<len;i++)
+		printf("\t %c \t\t\t %d %d \n",pt[i],pt[i],ct[i]);
+
+
+	for(i=0;i<len;i++)
+		pt[i]=mul(ct[i],d,n);
+	printf("\n \t ciphertext \t\t plaintext \n\n");
+	
+	for(i=0;i<len;i++)
+		printf("\t %d \t\t\t %d %c\n", ct[i],pt[i],pt[i]);
+
+}
+
