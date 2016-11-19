@@ -1,0 +1,38 @@
+#include<stdio.h>
+main()
+{
+int a,b,d[10],i,c1=0,s,rem=0,rate,size[10];
+printf("Enter the number of packets \n");
+scanf("%d",&a);
+printf("Enter the Bucket size \n");
+scanf("%d",&s);
+printf("Enter the output rate \n");
+scanf("%d",&rate);
+printf("Enter the time in array\n");
+for(i=0;i<a;i++)
+scanf("%d",&d[i]);
+printf("Enter the size of packet in array\n");
+for(i=0;i<a;i++)
+scanf("%d",&size[d[i]]);
+for(i=0;c1<a||rem!=0;i++)
+{
+printf("time=%d\n",i);
+if(size[i]!=0)
+c1++;
+if(size[i]>s)
+printf("drop\n");
+else if((size[i]+rem)>s)
+printf("drop\n");
+else
+rem+=size[i];
+if(rem<rate)
+printf("byte transmitted:%d\n",rem);
+else
+printf("byte in bucket:%d\n",rate);
+rem-=rate;
+if(rem<=0)
+rem=0;
+else
+printf("byte still to be transmitted%d\n",rem);
+}
+}
